@@ -13,4 +13,10 @@ router.post('/upload', upload.fields([
   { name: 'bannerImage', maxCount: 1 }
 ]), profileController.uploadImages);
 
+router.put('/about', profileController.updateAbout);
+router.put('/experiences', profileController.updateExperiences);   
+
+
+
+
 module.exports = router;

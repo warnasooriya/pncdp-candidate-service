@@ -10,7 +10,7 @@
   },
   "author": "",
   "license": "ISC",
-   "dependencies": {
+  "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.5",
     "@sendgrid/mail": "^8.1.4",
     "aws-sdk": "^2.1692.0",
