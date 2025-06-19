@@ -15,8 +15,9 @@ router.post('/upload', upload.fields([
 
 router.put('/about', profileController.updateAbout);
 router.put('/experiences', profileController.updateExperiences);   
-
-
-
+router.put('/education', profileController.updateEducation);   
+router.put("/skills", profileController.updateSkills);
+router.put("/certifications", profileController.updateCertifications);
+router.put("/portfolio", profileController.updatePortfolio);
 
 module.exports = router;

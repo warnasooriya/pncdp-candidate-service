@@ -94,3 +94,58 @@ exports.updateExperiences = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.updateEducation = async (req, res) => {
+  try {
+    const { id, educations } = req.body;
+    const profile = await Profile.findOneAndUpdate(
+      { _id: id },
+      { $set: { educations } },
+      { new: true, upsert: true }
+    );
+
+    res.json(profile);
+  } catch (err) {
+    console.error('Update experiences error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.updateSkills = async (req, res) => {
+  try {
+    const { id, skills  } = req.body;
+    const profile = await Profile.findOneAndUpdate(
+      { _id: id },
+      { $set: { skills  } },
+      { new: true, upsert: true }
+    );
+
+    res.json(profile);
+  } catch (err) {
+    console.error('Update skills  error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.updatePortfolio = async (req, res) => {
+  const { id, portfolio } = req.body;
+  const profile = await Profile.findOneAndUpdate({ _id: id }, { portfolio }, { new: true, upsert: true });
+  res.json(profile);
+};
+
+exports.updateCertifications = async (req, res) => {
+  try {
+    const { id, certifications } = req.body;
+
+    const profile = await Profile.findOneAndUpdate(
+      { _id: id },
+      { $set: { certifications } },
+      { new: true, upsert: true }
+    );
+
+    res.json(profile);
+  } catch (err) {
+    console.error("Update certifications error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
