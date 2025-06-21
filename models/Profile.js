@@ -57,13 +57,30 @@ const portfolioSchema = new mongoose.Schema({
 
 const ProfileSchema = new mongoose.Schema(
   {
-    fullName: {
+    userId: {
       type: String,
       required: true,
+      unique: true,
+    },
+    signInDetails: {
+      loginId: {
+        type: String,
+        required: true,
+        unique: true,
+      },
+      authFlowType: {
+        type: String,
+        required: true
+      },
+      
+    } ,
+    fullName: {
+      type: String,
+    //   required: true,
     },
     headline: {
       type: String,
-      required: true,
+    //   required: true,
     },
     bannerImage: {
       type: String, // image URLs or paths
@@ -83,7 +100,6 @@ const ProfileSchema = new mongoose.Schema(
     ],
     certifications: [certificationSchema],
     portfolio: [portfolioSchema],
-    
   },
   {
     timestamps: true,

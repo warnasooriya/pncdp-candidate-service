@@ -3,9 +3,7 @@ const  {getSignedUrl} =  require('../services/StorageService');
 exports.getProfile = async (req, res) => {
 
     const profileId = req.query.id;
-    const profile = await Profile.findById(profileId).exec(); // Add user ID if needed
-
-      
+    const profile = await Profile.findOne({userId: profileId}).exec(); // Add user ID if needed
 
    if (!profile) {
       return res.status(404).json({ message: 'Profile not found' });
@@ -25,7 +23,7 @@ exports.updateProfile = async (req, res) => {
     const { id, fullName, headline } = req.body;
 
     const profile = await Profile.findOneAndUpdate(
-      { _id: id }, // filter by _id
+      { userId: id }, // filter by _id
       { fullName, headline },
       {
         new: true,              // return the updated document
@@ -50,7 +48,7 @@ exports.uploadImages = async (req, res) => {
     updates.bannerImage = `${req.files.bannerImage[0].key}`;
   }
 
-  const profile = await Profile.findOneAndUpdate({}, updates, { new: true });
+  const profile = await Profile.findOneAndUpdate({userId: req.body.id}, updates, { new: true });
 
    const updatedProfile = {
       ...profile._doc,
@@ -67,7 +65,7 @@ exports.updateAbout = async (req, res) => {
     const { id, description } = req.body;
 
    const profile = await Profile.findOneAndUpdate(
-      { _id: id },
+      { userId: id },
       { $set: { about: { Description: description } } },
       { new: true, upsert: true }
     );
@@ -83,7 +81,7 @@ exports.updateExperiences = async (req, res) => {
   try {
     const { id, experiences } = req.body;
     const profile = await Profile.findOneAndUpdate(
-      { _id: id },
+      { userId: id },
       { $set: { experiences } },
       { new: true, upsert: true }
     );
@@ -99,7 +97,7 @@ exports.updateEducation = async (req, res) => {
   try {
     const { id, educations } = req.body;
     const profile = await Profile.findOneAndUpdate(
-      { _id: id },
+      { userId: id },
       { $set: { educations } },
       { new: true, upsert: true }
     );
@@ -115,7 +113,7 @@ exports.updateSkills = async (req, res) => {
   try {
     const { id, skills  } = req.body;
     const profile = await Profile.findOneAndUpdate(
-      { _id: id },
+      { userId: id },
       { $set: { skills  } },
       { new: true, upsert: true }
     );
@@ -129,7 +127,7 @@ exports.updateSkills = async (req, res) => {
 
 exports.updatePortfolio = async (req, res) => {
   const { id, portfolio } = req.body;
-  const profile = await Profile.findOneAndUpdate({ _id: id }, { portfolio }, { new: true, upsert: true });
+  const profile = await Profile.findOneAndUpdate({ userId: id }, { portfolio }, { new: true, upsert: true });
   res.json(profile);
 };
 
@@ -138,7 +136,7 @@ exports.updateCertifications = async (req, res) => {
     const { id, certifications } = req.body;
 
     const profile = await Profile.findOneAndUpdate(
-      { _id: id },
+      { userId: id },
       { $set: { certifications } },
       { new: true, upsert: true }
     );
