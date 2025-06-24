@@ -61,19 +61,18 @@ const ProfileSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      index: true, // Index for faster lookups
     },
-    signInDetails: {
-      loginId: {
-        type: String,
-        required: true,
-        unique: true,
-      },
-      authFlowType: {
-        type: String,
-        required: true
-      },
-      
-    } ,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true, // Index for faster lookups
+    },
+    picture: {
+      type: String, // image URLs or paths
+      default: null,
+    },
     fullName: {
       type: String,
     //   required: true,
