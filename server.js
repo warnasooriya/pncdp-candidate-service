@@ -38,14 +38,16 @@ app.use(cookieParser())
 app.use('/uploads', express.static('uploads'));
 const profileRoutes = require('./routes/profile');
 const userRoutes = require('./routes/user');
+const jobsRoutes = require('./routes/jobs');
 
 app.use('/', express.static(path.join(__dirname, 'public')))
 app.use('/', require('./routes/root'))
 
 
 
- app.use('/api/profile', profileRoutes);
-app.use('/api/users', userRoutes)
+ app.use('/api/candidate/profile', profileRoutes);
+app.use('/api/candidate/users', userRoutes)
+app.use('/api/candidate/jobs', jobsRoutes)
 
 app.all('*', (req, res) => {
     res.status(404)
