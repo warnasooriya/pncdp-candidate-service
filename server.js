@@ -39,15 +39,19 @@ app.use('/uploads', express.static('uploads'));
 const profileRoutes = require('./routes/profile');
 const userRoutes = require('./routes/user');
 const jobsRoutes = require('./routes/jobs');
+const networkRoutes = require('./routes/network');
 
 app.use('/', express.static(path.join(__dirname, 'public')))
 app.use('/', require('./routes/root'))
 
 
 
- app.use('/api/candidate/profile', profileRoutes);
+app.use('/api/candidate/profile', profileRoutes);
 app.use('/api/candidate/users', userRoutes)
 app.use('/api/candidate/jobs', jobsRoutes)
+
+
+app.use('/api/candidate/network', networkRoutes)
 
 app.all('*', (req, res) => {
     res.status(404)

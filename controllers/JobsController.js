@@ -1,3 +1,4 @@
+const Application = require('../models/Application');
 const Jobs = require('../models/Jobs');
 const Profile = require('../models/Profile');
 const  {getSignedUrl} =  require('../services/StorageService');
@@ -42,7 +43,7 @@ exports.getFutureJobs = async (req, res) => {
         const jobsWithUrls = jobs.map(async (job) => {
             const url = await getSignedUrl(job.banner);
             const profile = await Profile.findOne({ userId: job.userId }, 'profileImage fullName');
-            if (profile) {
+            if (profile && profile.profileImage) {
                 const profImage = await getSignedUrl(profile.profileImage);
                 job['user'] = {
                     name: profile.fullName,
@@ -62,5 +63,26 @@ exports.getFutureJobs = async (req, res) => {
     } catch (error) {
         console.error('Error fetching future jobs:', error);
         res.status(500).json({ error: 'Failed to fetch future jobs' });
+    }
+};
+
+exports.applyForJob = async (req, res) => {
+    try {
+        const application = {};
+         if (req.files?.resume) {
+         application.resume = `${req.files.resume[0].key}`;
+        }else{
+            return res.status(400).json({ message: 'Resume is required' });
+        }
+
+       application.jobId = req.body.jobId;
+       application.userId = req.body.applicantId;
+
+        const app = new Application(application);
+        await app.save();
+        res.status(200).json({ message: 'Job applied successfully' });
+    } catch (error) {
+        console.error('Error applying for job:', error);
+        res.status(500).json({ error: 'Failed to apply for job' });
     }
 };
