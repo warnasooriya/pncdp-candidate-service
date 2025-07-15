@@ -63,6 +63,11 @@ const ProfileSchema = new mongoose.Schema(
       unique: true,
       index: true, // Index for faster lookups
     },
+    userType:{
+      type: String,
+      required: true,
+      index: true,
+    },
     email: {
       type: String,
       required: true,
