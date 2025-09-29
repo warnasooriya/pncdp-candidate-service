@@ -40,6 +40,7 @@ const profileRoutes = require('./routes/profile');
 const userRoutes = require('./routes/user');
 const jobsRoutes = require('./routes/jobs');
 const networkRoutes = require('./routes/network');
+const postsRoutes = require('./routes/posts');
 
 app.use('/', express.static(path.join(__dirname, 'public')))
 app.use('/', require('./routes/root'))
@@ -49,7 +50,7 @@ app.use('/', require('./routes/root'))
 app.use('/api/candidate/profile', profileRoutes);
 app.use('/api/candidate/users', userRoutes)
 app.use('/api/candidate/jobs', jobsRoutes)
-
+app.use('/api/candidate/posts', postsRoutes)
 
 app.use('/api/candidate/network', networkRoutes)
 

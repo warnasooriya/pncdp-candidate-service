@@ -5,8 +5,6 @@ const  {getSignedUrl} =  require('../services/StorageService');
 
 exports.getFutureJobs = async (req, res) => {
     try {
-
-
         const query=[
             {
                 $match: {
