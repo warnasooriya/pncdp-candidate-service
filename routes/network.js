@@ -18,4 +18,7 @@ router.get('/status/:userId/:targetUserId', networkController.getConnectionStatu
 // Get batch connection statuses for multiple users
 router.post('/status/batch', networkController.getBatchConnectionStatus);
 
+// Get connected user profile
+router.get('/profile/:userId/:targetUserId', networkController.getConnectedUserProfile);
+
 module.exports = router;

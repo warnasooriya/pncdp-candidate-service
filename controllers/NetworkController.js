@@ -270,6 +270,72 @@ exports.getContacts = async (req, res) => {
     }
 };
 
+// Get connected user profile
+exports.getConnectedUserProfile = async (req, res) => {
+    try {
+        const { userId, targetUserId } = req.params;
+
+        if (!userId || !targetUserId) {
+            return res.status(400).json({ error: 'User ID and target user ID are required' });
+        }
+
+        const profile = await Profile.findById(targetUserId);
+        if (!profile) {
+            return res.status(404).json({ error: 'Target user profile not found' });
+        }
+        // Check if users are connected
+        const connection = await Connection.findOne({
+            $or: [
+                { requester: userId, recipient: profile.userId, status: 'accepted' },
+                { requester: profile.userId, recipient: userId, status: 'accepted' }
+            ]
+        });
+
+        if (!connection) {
+            return res.status(403).json({ error: 'You can only view profiles of connected users' });
+        }
+
+        
+       
+        // Generate signed URLs for images if they exist
+        let profileImageUrl = null;
+        let bannerImageUrl = null;
+
+        if (profile.profileImage) {
+            try {
+                profileImageUrl = await getSignedUrl(profile.profileImage);
+            } catch (error) {
+                console.warn('Failed to generate signed URL for profile image:', error);
+            }
+        }
+
+        if (profile.bannerImage) {
+            try {
+                bannerImageUrl = await getSignedUrl(profile.bannerImage);
+            } catch (error) {
+                console.warn('Failed to generate signed URL for banner image:', error);
+            }
+        }
+
+        // Prepare response with connection info
+        const profileData = {
+            ...profile.toObject(),
+            profileImageUrl,
+            bannerImageUrl,
+            connectionInfo: {
+                connectionId: connection._id,
+                connectionDate: connection.connectionDate,
+                isRequester: connection.requester === userId
+            }
+        };
+
+        res.status(200).json({ profile: profileData });
+    } catch (error) {
+        console.error('Error fetching connected user profile:', error);
+        res.status(500).json({ error: 'Failed to fetch user profile' });
+    }
+};
+
 // Helper functions
 async function getAcceptedConnections(userId) {
     const connections = await Connection.find({
