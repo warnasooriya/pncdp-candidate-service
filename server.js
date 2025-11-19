@@ -60,7 +60,7 @@ app.use('/api/candidate/network', networkRoutes)
 app.use('/api/candidate/messages', messageRoutes)
 app.use('/api/candidate/activities', activityRoutes)
 
-app.use('/health', healthRoutes)
+app.use('/helth', healthRoutes)
 
 app.all('*', (req, res) => {
     res.status(404)
