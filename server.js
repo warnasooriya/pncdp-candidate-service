@@ -43,6 +43,8 @@ const networkRoutes = require('./routes/network');
 const postsRoutes = require('./routes/posts');
 const messageRoutes = require('./routes/messages');
 const activityRoutes = require('./routes/activities');
+const healthRoutes = require('./routes/health');
+
 
 app.use('/', express.static(path.join(__dirname, 'public')))
 app.use('/', require('./routes/root'))
@@ -57,6 +59,8 @@ app.use('/api/candidate/posts', postsRoutes)
 app.use('/api/candidate/network', networkRoutes)
 app.use('/api/candidate/messages', messageRoutes)
 app.use('/api/candidate/activities', activityRoutes)
+
+app.use('/health', healthRoutes)
 
 app.all('*', (req, res) => {
     res.status(404)
