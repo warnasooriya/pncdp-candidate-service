@@ -22,4 +22,4 @@ USER 10001
 # Expose needed port
 EXPOSE 8080
 
-CMD ["node", "app.js"]
+CMD ["node", "server.js"]
