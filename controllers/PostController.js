@@ -106,12 +106,16 @@ exports.getFeedPosts = async (req, res) => {
       ]
     });
 
+    
     const connectedUserIds = connections.map(conn => 
       conn.requester === userId ? conn.recipient : conn.requester
     );
 
+    
     // Include user's own posts and connections' posts
     const feedUserIds = [userId, ...connectedUserIds];
+
+    
 
     // Build query based on privacy settings
     let query = {

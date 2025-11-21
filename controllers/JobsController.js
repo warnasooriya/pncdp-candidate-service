@@ -2,6 +2,7 @@ const Application = require('../models/Application');
 const Jobs = require('../models/Jobs');
 const Profile = require('../models/Profile');
 const  {getSignedUrl} =  require('../services/StorageService');
+const redisClient = require("../config/redisClient");
 
 exports.getFutureJobs = async (req, res) => {
     try {
@@ -78,6 +79,11 @@ exports.applyForJob = async (req, res) => {
 
         const app = new Application(application);
         await app.save();
+
+        // clear relevant cache
+        const cacheId = `job:${application.jobId.toString()}:rankings`;
+        await redisClient.del(cacheId);
+
         res.status(200).json({ message: 'Job applied successfully' });
     } catch (error) {
         console.error('Error applying for job:', error);
