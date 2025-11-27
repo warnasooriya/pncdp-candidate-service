@@ -6,8 +6,17 @@ const { upload } = require('../services/StorageService');
 
 // POST CRUD OPERATIONS
 
-// Create a new post
-router.post('/', upload.single('media'), PostController.createPost);
+// Create a new post with robust upload error handling
+const uploadMediaSingle = upload.single('media');
+router.post('/', (req, res, next) => {
+  uploadMediaSingle(req, res, (err) => {
+    if (err) {
+      console.error('S3 upload error (create post):', err);
+      return res.status(500).json({ error: 'Failed to upload media', details: err.message || String(err) });
+    }
+    next();
+  });
+}, PostController.createPost);
 
 // Get feed posts (with pagination and filters)
 router.get('/feed', PostController.getFeedPosts);
@@ -18,8 +27,16 @@ router.get('/user/:userId', PostController.getUserPosts);
 // Get a specific post
 router.get('/:postId', PostController.getPost);
 
-// Update a post
-router.put('/:postId', upload.single('media'), PostController.updatePost);
+// Update a post with robust upload error handling
+router.put('/:postId', (req, res, next) => {
+  uploadMediaSingle(req, res, (err) => {
+    if (err) {
+      console.error('S3 upload error (update post):', err);
+      return res.status(500).json({ error: 'Failed to upload media', details: err.message || String(err) });
+    }
+    next();
+  });
+}, PostController.updatePost);
 
 // Delete a post
 router.delete('/:postId', PostController.deletePost);

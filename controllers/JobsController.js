@@ -68,10 +68,11 @@ exports.getFutureJobs = async (req, res) => {
 exports.applyForJob = async (req, res) => {
     try {
         const application = {};
-         if (req.files?.resume) {
-         application.resume = `${req.files.resume[0].key}`;
-        }else{
-            return res.status(400).json({ message: 'Resume is required' });
+        if (req.files?.resume && req.files.resume[0]?.key) {
+            application.resume = `${req.files.resume[0].key}`;
+        } else {
+            console.error('Resume upload missing: files=', req.files);
+            return res.status(400).json({ error: 'Resume is required' });
         }
 
        application.jobId = req.body.jobId;
@@ -87,6 +88,6 @@ exports.applyForJob = async (req, res) => {
         res.status(200).json({ message: 'Job applied successfully' });
     } catch (error) {
         console.error('Error applying for job:', error);
-        res.status(500).json({ error: 'Failed to apply for job' });
+        res.status(500).json({ error: 'Failed to apply for job', details: error.message || String(error) });
     }
 };

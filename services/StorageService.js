@@ -12,6 +12,18 @@ const s3 = new AWS.S3({
     region: process.env.AWS_REGION
 });
 
+const validateS3Env = () => {
+    const missing = [];
+    if (!process.env.AWS_ACCESS_KEY) missing.push('AWS_ACCESS_KEY');
+    if (!process.env.AWS_SECRET_KEY) missing.push('AWS_SECRET_KEY');
+    if (!process.env.AWS_REGION) missing.push('AWS_REGION');
+    if (!process.env.AWS_BUCKET) missing.push('AWS_BUCKET');
+    if (missing.length) {
+        console.error('S3 environment variables missing:', missing.join(', '));
+    }
+};
+validateS3Env();
+
 /**
  * Ensure that the specified S3 bucket exists. If not, create it.
  * @param {string} bucketName - The name of the S3 bucket.
@@ -21,6 +33,7 @@ const ensureBucketExists = async (bucketName) => {
         await s3.headBucket({ Bucket: bucketName }).promise();
         console.log(`Bucket "${bucketName}" already exists.`);
     } catch (err) {
+        console.log(err);
         if (err.statusCode === 404) {
             console.log(`Creating new bucket: ${bucketName}`);
             await s3.createBucket({ Bucket: bucketName }).promise();
@@ -35,20 +48,27 @@ const ensureBucketExists = async (bucketName) => {
 /**
  * Multer file upload configuration with AWS S3 storage.
  */
+
 const upload = multer({
   storage: multerS3({
     s3: s3,
     bucket: process.env.AWS_BUCKET, // 👈 must be a string, not an async function
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: (req, file, cb) => {
-      const fileExt = path.extname(file.originalname);
-      const fileName = `${new ObjectId()}${fileExt}`;
-      console.log(`Uploading file to S3 as: ${fileName}`);
-      cb(null, fileName);
+      try {
+        const fileExt = path.extname(file.originalname || '');
+        const fileName = `${new ObjectId()}${fileExt}`;
+        console.log(`Uploading file to S3 as: ${fileName}`);
+        cb(null, fileName);
+      } catch (e) {
+        console.error('Error generating S3 key:', e);
+        cb(e);
+      }
     }
   }),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
+ 
 /**
  * Generate a pre-signed URL for accessing a file in an S3 bucket.
  * @param {string} bucketName - The S3 bucket name.
